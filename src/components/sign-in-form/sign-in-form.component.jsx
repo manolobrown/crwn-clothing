@@ -17,12 +17,12 @@ const defaultFormFields = {
 
 const SignInForm = () => {
   const signInWithGoogle = async () => {
-    const { user } = await signInWithGooglePopup();
-    await createUserDocumentFromAuth(user);
+    await signInWithGooglePopup();
   };
 
   const [formFields, setFormFields] = useState(defaultFormFields);
   const { email, password } = formFields;
+
   const resetFormFields = () => {
     setFormFields(defaultFormFields);
   };
@@ -35,8 +35,7 @@ const SignInForm = () => {
     }
 
     try {
-      const response = await signInAuthWithEmailAndPassword(email, password);
-      console.log(response.user);
+      const { user } = await signInAuthWithEmailAndPassword(email, password);
       resetFormFields();
     } catch (error) {
       switch (error.code) {
@@ -59,8 +58,8 @@ const SignInForm = () => {
 
   return (
     <div className="sign-up-form-container">
-      <h2>I already have an account?</h2>
-      <span>Sign index with your email and password</span>
+      <h2>Already have an account?</h2>
+      <span>Sign in with your email and password</span>
       <form onSubmit={handleSubmit}>
         <FormInput
           label="Email"
