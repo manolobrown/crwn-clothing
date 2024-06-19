@@ -10,10 +10,7 @@ import Button, {
   BUTTON_TYPE_CLASSES,
 } from "../../components/button/button.component";
 
-import {
-  SignInFormContainer,
-  ButtonsContainer,
-} from "./sign-in-form.styles.jsx";
+import { SignInFormContainer, ButtonsContainer } from "./sign-in-form.styles";
 
 const defaultFormFields = {
   email: "",
