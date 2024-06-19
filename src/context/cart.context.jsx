@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useReducer } from "react";
 
 const addCartItem = (cartItems, productToAdd) => {
   const existingCartItem = cartItems.find(
@@ -46,11 +46,63 @@ export const CartContext = createContext({
   cartTotal: 0,
 });
 
+export const CART_ACTION_TYPES = {
+  IS_CART_OPEN: "IS_CART_OPEN",
+  CART_ITEMS: "CART_ITEMS",
+  CART_COUNT: "CART_COUNT",
+  CART_TOTAL: "CART_TOTAL",
+};
+
+const INITIAL_STATE = {
+  isCartOpen: false,
+  cartItems: [],
+  cartCount: 0,
+  cartTotal: 0,
+};
+
+const cartReducer = (state, action) => {
+  const { type, payload } = action;
+  switch (type) {
+    case CART_ACTION_TYPES.IS_CART_OPEN:
+      return {
+        ...state,
+        isCartOpen: payload,
+      };
+    case CART_ACTION_TYPES.CART_ITEMS:
+      return {
+        ...state,
+        cartItems: payload,
+      };
+    case CART_ACTION_TYPES.CART_COUNT:
+      return {
+        ...state,
+        cartCount: payload,
+      };
+    case CART_ACTION_TYPES.CART_TOTAL:
+      return {
+        ...state,
+        cartTotal: payload,
+      };
+    default:
+      throw new Error(`Unsupported action type: ${type} in cartReducer`);
+  }
+};
+
 export const CartProvider = ({ children }) => {
-  const [isCartOpen, setIsCartOpen] = useState(false);
-  const [cartItems, setCartItems] = useState([]);
-  const [cartCount, setCartCount] = useState(0);
-  const [cartTotal, setCartTotal] = useState(0);
+  const [{ isCartOpen, cartItems, cartCount, cartTotal }, dispatch] =
+    useReducer(cartReducer, INITIAL_STATE);
+  const setIsCartOpen = (isOpen) => {
+    dispatch({ type: CART_ACTION_TYPES.IS_CART_OPEN, payload: isOpen });
+  };
+  const setCartItems = (cartItem) => {
+    dispatch({ type: CART_ACTION_TYPES.CART_ITEMS, payload: cartItem });
+  };
+  const setCartCount = (cartCount) => {
+    dispatch({ type: CART_ACTION_TYPES.CART_COUNT, payload: cartCount });
+  };
+  const setCartTotal = (cartTotal) => {
+    dispatch({ type: CART_ACTION_TYPES.CART_TOTAL, payload: cartTotal });
+  };
 
   useEffect(() => {
     const newCartCount = cartItems.reduce(
