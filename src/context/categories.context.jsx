@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useReducer } from "react";
 import { getCategoriesAndDocuments } from "../utils/firebase/firebase.utils.js";
 
 //as the actual value you want to access
@@ -6,8 +6,37 @@ export const CategoriesContext = createContext({
   categoriesMap: {},
 });
 
+export const CATEGORIES_ACTION_TYPES = {
+  CATEGORIES_MAP: "CATEGORIES_MAP",
+};
+
+const INITIAL_STATE = {
+  categoriesMap: {},
+};
+
 export const CategoriesProvider = ({ children }) => {
-  const [categoriesMap, setCategoriesMap] = useState({});
+  const cartReducer = (state, action) => {
+    const { type, payload } = action;
+    switch (type) {
+      case CATEGORIES_ACTION_TYPES.CATEGORIES_MAP:
+        return {
+          ...state,
+          categoriesMap: payload,
+        };
+      default:
+        throw new Error(
+          `Unsupported action type: ${type} in categoriesReducer`
+        );
+    }
+  };
+
+  const [{ categoriesMap }, dispatch] = useReducer(cartReducer, INITIAL_STATE);
+  const setCategoriesMap = (categoriesMap) => {
+    dispatch({
+      type: CATEGORIES_ACTION_TYPES.CATEGORIES_MAP,
+      payload: categoriesMap,
+    });
+  };
   useEffect(() => {
     const getCategories = async () => {
       const categoryMap = await getCategoriesAndDocuments();
