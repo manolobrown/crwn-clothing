@@ -1,5 +1,6 @@
-import { createContext, useState, useEffect, useReducer } from "react";
+import { createContext, useEffect, useReducer } from "react";
 import { getCategoriesAndDocuments } from "../utils/firebase/firebase.utils.js";
+import { createAction } from "../utils/reducer/reducer.utils";
 
 //as the actual value you want to access
 export const CategoriesContext = createContext({
@@ -32,10 +33,9 @@ export const CategoriesProvider = ({ children }) => {
 
   const [{ categoriesMap }, dispatch] = useReducer(cartReducer, INITIAL_STATE);
   const setCategoriesMap = (categoriesMap) => {
-    dispatch({
-      type: CATEGORIES_ACTION_TYPES.CATEGORIES_MAP,
-      payload: categoriesMap,
-    });
+    dispatch(
+      createAction(CATEGORIES_ACTION_TYPES.CATEGORIES_MAP, categoriesMap)
+    );
   };
   useEffect(() => {
     const getCategories = async () => {
